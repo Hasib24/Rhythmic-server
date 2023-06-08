@@ -29,6 +29,14 @@ async function run() {
     await client.connect();
 
     //API 
+    
+    const usesCollection = client.db('RhythmicDB').collection('usersCollection')
+
+    app.post('/user', async(req, res)=>{
+      const user = req.body;
+      const result = await usesCollection.insertOne(user)
+      res.send(result)
+    })
 
 
     // Send a ping to confirm a successful connection
