@@ -30,12 +30,18 @@ async function run() {
 
     //API 
     
-    const usesCollection = client.db('RhythmicDB').collection('usersCollection')
+    const usersCollection = client.db('RhythmicDB').collection('usersCollection')
 
     app.post('/user', async(req, res)=>{
       const user = req.body;
-      const result = await usesCollection.insertOne(user)
-      res.send(result)
+      const isExist = await usersCollection.findOne({email : user.email})
+      if(isExist){
+        // console.log("Already exist");
+        res.send('user already exist!')
+      }else{
+        const result = await usersCollection.insertOne(user)
+        res.send(result)
+      }
     })
 
 
