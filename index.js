@@ -44,17 +44,29 @@ async function run() {
     
     const usersCollection = client.db('RhythmicDB').collection('usersCollection')
 
+
+    //Called from login page 
+    app.get('/user', async(req, res)=>{
+      const user = req.query
+      const result = await usersCollection.findOne({email : user.email})
+      res.send(result)
+    })
+
+    // Called from regester page and google login button
     app.post('/user', async(req, res)=>{
       const user = req.body;
       const isExist = await usersCollection.findOne({email : user.email})
       if(isExist){
         console.log("Already exist");
-        res.send('user already exist!')
+        res.send(isExist)
       }else{
         const result = await usersCollection.insertOne(user)
         res.send(result)
       }
     })
+
+
+
 
 
     // Send a ping to confirm a successful connection
