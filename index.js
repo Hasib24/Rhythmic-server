@@ -30,7 +30,7 @@ const verifyJWT =(req, res, next)=>{
   }
 
   const token = authorizatnHeader.split(" ")[1]
-  console.log(token);
+  // console.log(token);
   jwt.verify(token, process.env.DB_ACCESS_TOKEN_SECREAT, (error, decoded)=>{
       if(error){
           return  res.status(403).send({error : true, message: 'UnAothorized token'})
@@ -86,8 +86,22 @@ async function run() {
     })
 
 
+    //verify admin
+    const verifyAdmin = async(req, res, next)=>{
+      const email = req.query.email;
+      const admin = await usersCollection.findOne({email : email})
+      if(admin.role==='admin'){
+        next()
+      }else{
+        return res.status(401).send({error : true, message: 'UnAothorized access'})
+
+      }
+      // console.log(email);
+    }
+
+
     //Called from admin penel to manage users
-    app.get('/users', verifyJWT, async (req, res)=>{
+    app.get('/users', verifyJWT, verifyAdmin, async (req, res)=>{
       const result = await usersCollection.find().toArray()
       res.send(result)
     })
