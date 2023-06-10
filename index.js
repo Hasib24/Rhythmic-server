@@ -40,7 +40,7 @@ const verifyJWT =(req, res, next)=>{
   })
 }
 
-
+//MongoDB
 const uri = `mongodb+srv://${process.env.DB_USER_NAME}:${process.env.DB_USER_PASS}@cluster0.mtm85fa.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -115,6 +115,24 @@ async function run() {
     app.get('/users', verifyJWT, verifyAdmin, async (req, res)=>{
       const result = await usersCollection.find().toArray()
       res.send(result)
+    })
+
+    //update user role [ From Admin panal ]
+    app.post('/usersrole', async(req, res)=>{
+      const user = req.body
+      const filter = { email: user.email }
+      const options = { upsert: true }
+      const updateDoc = {
+        $set: {
+          role: user.role
+        }
+      };
+
+      const result = await usersCollection.updateOne(filter, updateDoc, options)
+      res.send(result)
+  
+  
+   
     })
 
 
