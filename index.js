@@ -93,10 +93,21 @@ async function run() {
       if(admin.role==='admin'){
         next()
       }else{
-        return res.status(401).send({error : true, message: 'UnAothorized access'})
+        return res.status(401).send({error : true, message: 'UnAothorized access, not admin'})
 
       }
-      // console.log(email);
+      
+    }
+
+    //verify Instructor
+    const verifyInstractor = async(req, res, next)=>{
+      const email = req.query.email;
+      const instructor = await usersCollection.findOne({email : email})
+      if(instructor.role==='instructor'){
+        next()
+      }else{
+        return res.status(401).send({error : true, message: 'UnAothorized access, not instructor'})
+      }
     }
 
 
