@@ -19,9 +19,26 @@ app.get('/', (req, res) => {
 app.post('/jwt', (req, res)=>{
   const isUser = req.body;
   const token = jwt.sign(isUser, process.env.DB_ACCESS_TOKEN_SECREAT, { expiresIn: '1h'})
-  res.send({token})
+  res.send(token)
   
 })
+
+const verifyJWT =(req, res, next)=>{
+  const authorizatnHeader = req.headers.authorizatn;
+  if(!authorizatnHeader){
+     return res.status(401).send({error : true, message: 'UnAothorized access'})
+  }
+
+  const token = authorizatnHeader.split(" ")[1]
+  console.log(token);
+  jwt.verify(token, process.env.DB_ACCESS_TOKEN_SECREAT, (error, decoded)=>{
+      if(error){
+          return  res.status(403).send({error : true, message: 'UnAothorized token'})
+      }
+      req.decoded = decoded;
+      next()
+  })
+}
 
 
 const uri = `mongodb+srv://${process.env.DB_USER_NAME}:${process.env.DB_USER_PASS}@cluster0.mtm85fa.mongodb.net/?retryWrites=true&w=majority`;
@@ -61,8 +78,18 @@ async function run() {
         res.send(isExist)
       }else{
         const result = await usersCollection.insertOne(user)
-        res.send(result)
+        if(result.acknowledged){
+          console.log(result);
+          res.send(user)
+        }
       }
+    })
+
+
+    //Called from admin penel to manage users
+    app.get('/users', verifyJWT, async (req, res)=>{
+      const result = await usersCollection.find().toArray()
+      res.send(result)
     })
 
 
