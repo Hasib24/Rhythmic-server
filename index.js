@@ -59,7 +59,8 @@ async function run() {
 
     //API 
     
-    const usersCollection = client.db('RhythmicDB').collection('usersCollection')
+    const usersCollection = client.db('RhythmicDB').collection('usersCollection');
+    const classesCollection = client.db('RhythmicDB').collection('classesCollection');
 
 
     //Called from login page 
@@ -103,11 +104,13 @@ async function run() {
     const verifyInstractor = async(req, res, next)=>{
       const email = req.query.email;
       const instructor = await usersCollection.findOne({email : email})
-      if(instructor.role==='instructor'){
+      if(instructor.role==='instractor'){
+       
         next()
       }else{
         return res.status(401).send({error : true, message: 'UnAothorized access, not instructor'})
       }
+      // console.log(instructor);
     }
 
 
@@ -127,12 +130,15 @@ async function run() {
           role: user.role
         }
       };
-
       const result = await usersCollection.updateOne(filter, updateDoc, options)
       res.send(result)
-  
-  
-   
+    })
+
+    app.post('/addaclass', verifyInstractor, async(req, res)=>{
+      const classData = req.body;
+      const result = await classesCollection.insertOne(classData)
+      
+      res.send(result)
     })
 
 
