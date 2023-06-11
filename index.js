@@ -121,7 +121,7 @@ async function run() {
     })
 
     //update user role [ From Admin panal ]
-    app.post('/usersrole', async(req, res)=>{
+    app.patch('/usersrole', async(req, res)=>{
       const user = req.body
       const filter = { email: user.email }
       const options = { upsert: true }
@@ -146,6 +146,12 @@ async function run() {
     app.get('/myclasses', verifyJWT, verifyInstractor, async(req, res)=>{
       const email = req.query.email;
       const result = await classesCollection.find({email : email}).toArray()
+      res.send(result)
+    })
+
+    //Callde by an admin to load all classes data
+    app.get('/allclasses', verifyJWT, verifyAdmin, async(req, res)=>{
+      const result = await classesCollection.find().toArray()
       res.send(result)
     })
 
