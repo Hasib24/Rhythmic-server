@@ -134,10 +134,18 @@ async function run() {
       res.send(result)
     })
 
+    //add class api called from add class page of instractor dashboard
     app.post('/addaclass', verifyInstractor, async(req, res)=>{
       const classData = req.body;
       const result = await classesCollection.insertOne(classData)
       
+      res.send(result)
+    })
+
+    // Called from instractor dashboard for myclasses data of instructor
+    app.get('/myclasses', verifyJWT, verifyInstractor, async(req, res)=>{
+      const email = req.query.email;
+      const result = await classesCollection.find({email : email}).toArray()
       res.send(result)
     })
 
