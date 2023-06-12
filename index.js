@@ -75,7 +75,7 @@ async function run() {
       const user = req.body;
       const isExist = await usersCollection.findOne({email : user.email})
       if(isExist){
-        console.log("Already exist");
+        // console.log("Already exist");
         res.send(isExist)
       }else{
         const result = await usersCollection.insertOne(user)
@@ -168,6 +168,21 @@ async function run() {
       const options = { upsert: true };
       const result = await classesCollection.updateOne(query, updateDoc, options)
       res.send(result)
+    })
+
+    //update status: approved or denyed called from admin dashboard
+    app.patch('/statusupdate', verifyAdmin, async(req, res)=>{
+      const statusData = req.body
+      const query = { _id : new ObjectId(statusData.id) }
+      const updateDoc = {
+        $set: {
+          approveStatus : statusData.approveStatus
+        }
+      }
+      const options = { upsert: true };
+      const result = await classesCollection.updateOne(query, updateDoc, options)
+      res.send(result)
+
     })
 
 
