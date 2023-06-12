@@ -5,7 +5,7 @@ const port = process.env.PORT || 5000
 const cors = require('cors')
 const jwt = require('jsonwebtoken')
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 //Middleware
 app.use(cors())
@@ -152,6 +152,21 @@ async function run() {
     //Callde by an admin to load all classes data
     app.get('/allclasses', verifyJWT, verifyAdmin, async(req, res)=>{
       const result = await classesCollection.find().toArray()
+      res.send(result)
+    })
+
+    // send feedback by admin
+    app.patch('/feedback', async(req, res)=>{
+      const feedbackData = req.body;
+      // console.log(feedbackData);
+      const query = { _id : new ObjectId(feedbackData.id) }
+      const updateDoc = {
+        $set: {
+          feedback : feedbackData.feedback
+        }
+      }
+      const options = { upsert: true };
+      const result = await classesCollection.updateOne(query, updateDoc, options)
       res.send(result)
     })
 
