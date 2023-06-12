@@ -185,6 +185,15 @@ async function run() {
 
     })
 
+    //Delete a class: instractor api calle by instractor only
+    app.delete('/deleteclass', verifyInstractor, async(req, res)=>{
+     
+      const query = {_id : new ObjectId(req.query.id)}
+      const result = await classesCollection.deleteOne(query)
+      res.send(result);
+    })
+
+
 
 
 
