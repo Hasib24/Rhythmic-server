@@ -207,6 +207,15 @@ async function run() {
       res.send(result)
     })
 
+    
+    // Update class by instractor 
+    app.get('/updateclass', verifyInstractor, async(req, res)=>{
+      const id = req.query.id
+      const quary = {_id : new ObjectId(id)}
+      const result = await classesCollection.findOne(quary)
+      res.send(result)
+    })
+
 
 
 
