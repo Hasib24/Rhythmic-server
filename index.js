@@ -216,6 +216,26 @@ async function run() {
       res.send(result)
     })
 
+    app.patch('/updateclass', verifyInstractor, async(req, res)=>{
+      const id = req.query.id
+      const updateData = req.body
+      const query = { _id : new ObjectId(id) }
+      const updateDoc = {
+        $set: {
+          approveStatus : updateData.approveStatus,
+          className: updateData.className,
+          photoUrl : updateData.photoUrl,
+          totalSeat : updateData.totalSeat,
+          enrolls : updateData.enrolls,
+          feedback : updateData.feedback,
+          price : updateData.price
+        }
+      }
+      const options = { upsert: true };
+      const result = await classesCollection.updateOne(query, updateDoc, options)
+      res.send(result)
+    })
+
 
 
 
