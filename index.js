@@ -93,6 +93,21 @@ async function run() {
       }
     })
 
+    // call by student to select class 
+    app.patch('/user', async(req, res)=>{
+      const email = req.query.email;
+      const data = req.body
+      const filter = { email: email }
+      const options = { upsert: true }
+      const updateDoc = {
+        $set: {
+          selectedSlass: data
+        }
+      };
+      const result = await usersCollection.updateOne(filter, updateDoc, options)
+      res.send(result)
+    })
+
 
     //verify admin
     const verifyAdmin = async(req, res, next)=>{
