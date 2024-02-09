@@ -1,12 +1,8 @@
 const express = require('express');
 const cors = require('cors');
-// const multer  = require('multer')
-// const cookieParser = require('cookie-parser')
-// const upload = multer({ dest: 'uploads/' })
 require('dotenv').config();
 
 const app = express();
-
 
 // Middleware
 app.use(express.json()); //body parser 
@@ -27,6 +23,7 @@ const corsOptions ={
 app.use(cors(corsOptions))
 app.use(express.json())
 
+require('./configs/DBConfig.js')
 
 const AdminHandler = require('./routes/AdminHandler.js');
 const UserHandler = require('./routes/UserHandler.js')
@@ -41,12 +38,12 @@ app.use("/courses", CoursesHandler)
 
 // APIs
 app.get('/', (req, res) => {
-  res.send(`Express Server is Running at Port 5000`);
+  res.send(`Express Server is Running at Port ${process.env.PORT}`);
 });
 
 // Server Start
 app.listen(5001, () => {
-  console.log(`Server is listening on port `);
+  console.log(`Server is listening on port ${process.env.PORT}`);
 });
 
 
