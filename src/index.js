@@ -5,22 +5,21 @@ const app = express();
 
 // Middleware
 app.use(express.json()); //body parser 
-app.use(cookieParser())
 app.use(cors({
   origin: 'http://localhost:5173',
   methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
   credentials: true
 }));
 
-const corsOptions ={
-  origin:'*', 
-  credentials:true,
-  exposedHeaders: 'Authorization',
-  optionSuccessStatus:200,
-}
+// const corsOptions ={
+//   origin:'*', 
+//   credentials:true,
+//   exposedHeaders: 'Authorization',
+//   optionSuccessStatus:200,
+// }
 
-app.use(cors(corsOptions))
-app.use(express.json())
+// app.use(cors(corsOptions))
+
 
 require('./configs/DBConfig.js')
 

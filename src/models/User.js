@@ -39,17 +39,17 @@ const UserSchema = new mongoose.Schema({
       type: Boolean,
       default: true,
     },
-    profileImageURL: {
-      type: String,
-      default: null,
-    },
+    // profileImageURL: {
+    //   type: String,
+    //   default: null,
+    // },
     createdDate: {
       type: Date,
       default: Date.now,
     },
   });
 
-  const User = mongoose.model('User', UserSchema);
+  const User = mongoose.model('User collections', UserSchema);
 
   module.exports = User;
   
