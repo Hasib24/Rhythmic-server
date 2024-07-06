@@ -13,7 +13,7 @@ const UserSchema = new mongoose.Schema({
     },
     password: {
       type: String,
-      default: ''
+      default: ''  // Password must be hashed in production
     },
     role:{
       type : String,
@@ -49,7 +49,7 @@ const UserSchema = new mongoose.Schema({
     },
   });
 
-  const User = mongoose.model('User collections', UserSchema);
+  const User = mongoose.model('User_collections', UserSchema);
 
   module.exports = User;
   

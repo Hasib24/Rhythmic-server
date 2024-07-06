@@ -16,6 +16,7 @@ router.post("/signup", async (req, res) => {
                 userName: req.body.userName,
                 userEmail: req.body.userEmail,
                 // profileImageURL: req.body.profileImageURL
+                password: req.body.password
             })
 
             if (result?.length == 0) {
