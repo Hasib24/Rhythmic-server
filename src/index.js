@@ -8,7 +8,9 @@ app.use(express.json()); //body parser
 app.use(cors({
   origin: 'http://localhost:5173',
   methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
-  credentials: true
+  credentials: true,
+  exposedHeaders: 'Authorization',
+  optionSuccessStatus:200,
 }));
 
 // const corsOptions ={
