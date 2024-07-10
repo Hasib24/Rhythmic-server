@@ -4,49 +4,94 @@ const generateToken = require("../middlewares/generateToken");
 const verifyToken = require("../middlewares/verifyToken");
 const router = express.Router();
 
-router.post("/signup", async (req, res) => {
-    let userEmail = req.body.userEmail;
+router.post("/google-reg", generateToken, async (req, res) => {
+    const NewUser = new User({
+        userName: req.body.userName,
+        userEmail: req.body.userEmail,
+        // profileImageURL: req.body.profileImageURL
+        // password: req.body.password
+    })
 
-    User.find({ userEmail })
+    User.findOne({ userEmail : req.body.userEmail }).select({ password: 0, _id: 0, __v: 0, paymentIds: 0 })
         .then(result => {
-
-            //user dose not exist
-            const NewUser = new User({
-                userName: req.body.userName,
-                userEmail: req.body.userEmail,
-                // profileImageURL: req.body.profileImageURL
-                password: req.body.password
-            })
-
-            if (result?.length == 0) {
-
+            if (result.length == 0) {
                 NewUser.save().then(result => {
-                    // console.log(`Bearer ${generateToken(result._id)}`)
-                    res.setHeader('Authorization', `Bearer ${generateToken(result.userEmail)}`)
-                    res.send(result)
+                    let userObj = result.toObject();
+                    // Remove the password and _id fields
+                    delete userObj.password;
+                    delete userObj._id;
+                    delete userObj.__v;
+                    delete userObj.paymentIds;
+                    // Send the modified object
+                    res.send(userObj);
                 })
             } else {
-                // console.log(`Bearer ${generateToken(result._id)}`)
-                res.setHeader('Authorization', `Bearer ${generateToken(result[0].userEmail)}`)
                 res.send(result)
-
             }
+        })
+})
 
+router.post("/email-reg", generateToken, async (req, res) => {
+
+    const NewUser = new User({
+        userName: req.body.userName,
+        userEmail: req.body.userEmail,
+        // profileImageURL: req.body.profileImageURL
+        password: req.body.password
+    })
+
+    User.findOne({ userEmail: req.body.userEmail }).select({ password: 0, _id: 0, __v: 0, paymentIds: 0 })
+        .then(result => {
+            if (!result) {
+                NewUser.save().then(result => {
+                    let userObj = result.toObject();
+                    // Remove the password and _id fields
+                    delete userObj.password;
+                    delete userObj._id;
+                    delete userObj.__v;
+                    delete userObj.paymentIds;
+                    // Send the modified object
+                    res.send(userObj);
+                })
+            } else {
+                res.send(result)
+            }
         })
 
 })
 
-router.get("/signin", generateToken, async (req, res) => {
+router.get("/google-login", generateToken, async (req, res) => {
     let userEmail = req.query.userEmail;
-    User.find({ userEmail })
+    let newUser = req.query.newUser;
+
+
+    User.findOne({ userEmail }).select({ password: 0, _id: 0, __v: 0, paymentIds: 0 })
         .then(result => {
+
             if (result.length == 0) {
                 res.status(401).send({ error: true, message: 'UnAothorized access' })
             } else {
-                res.send(result);
+                res.send(result)
             }
         })
 })
+
+router.get("/email-login", generateToken, async (req, res) => {
+    let userEmail = req.query.userEmail;
+    let newUser = req.query.newUser;
+
+
+    User.findOne({ userEmail }).select({ password: 0, _id: 0, __v: 0, paymentIds: 0 })
+        .then(result => {
+
+            if (result.length == 0) {
+                res.status(401).send({ error: true, message: 'UnAothorized access' })
+            } else {
+                res.send(result)
+            }
+        })
+})
+
 
 
 
