@@ -7,21 +7,11 @@ const app = express();
 app.use(express.json()); //body parser 
 app.use(cors({
   origin: 'http://localhost:5173',
-  methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
+  methods: ['POST', 'PUT', 'GET', 'PATCH', 'OPTIONS', 'HEAD'],
   credentials: true,
   exposedHeaders: 'Authorization',
   optionSuccessStatus:200,
 }));
-
-// const corsOptions ={
-//   origin:'*', 
-//   credentials:true,
-//   exposedHeaders: 'Authorization',
-//   optionSuccessStatus:200,
-// }
-
-// app.use(cors(corsOptions))
-
 
 require('./configs/DBConfig.js')
 
