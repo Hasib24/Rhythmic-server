@@ -12,7 +12,7 @@ router.post("/google-reg", generateToken, async (req, res) => {
         // password: req.body.password
     })
 
-    User.findOne({ userEmail : req.body.userEmail }).select({ password: 0, _id: 0, __v: 0, paymentIds: 0 })
+    User.findOne({ userEmail: req.body.userEmail }).select({ password: 0, _id: 0, __v: 0, paymentIds: 0 })
         .then(result => {
             if (result.length == 0) {
                 NewUser.save().then(result => {
@@ -93,16 +93,14 @@ router.get("/email-login", generateToken, async (req, res) => {
 })
 
 
-
-
 //check user login 
-router.get("/check", verifyToken)
+router.get("/check", verifyToken, generateToken, async (req, res) => {
 
-
-//user list
-router.get("/list", verifyToken, async (req, res) => {
-    const userList = User.find({})
-    res.send(userList)
+    User.findOne({ userEmail: req.query.userEmail }).select({ password: 0, _id: 0, __v: 0, paymentIds: 0 })
+        .then(result => {
+            res.send(result)
+        })
 })
+
 
 module.exports = router
