@@ -3,11 +3,6 @@ const { verify } = require("jsonwebtoken");
 const Course = require("../models/Course");
 const router = express.Router();
 
-router.get("/", async(req, res)=>{
-    res.send("ok")
-})
-
-
 router.post("/add-class", verify, async(req, res)=>{
     const classData = req.body
     const newCourse = new Course(classData)
@@ -15,39 +10,26 @@ router.post("/add-class", verify, async(req, res)=>{
     res.send('Class saved success')
 })
 
-//     //add class api called from add class page of instractor dashboard
-//     app.post('/addaclass', verifyInstractor, async(req, res)=>{
-//       const classData = req.body;
-//       const result = await classesCollection.insertOne(classData)
-      
-//       res.send(result)
-//     })
+router.get("/my-classes", verify, async(req, res)=>{
+    const instractorEmail = req.query.userEmail;
+    
+    if(instractorEmail){
+        Course.find({instractorEmail: instractorEmail})
+        .then(result =>res.send(result))
+        .catch(error => console.log('my class find error', error))
+    }
+})
 
-//     //Delete a class: instractor api calle by instractor only
-//     app.delete('/deleteclass', verifyInstractor, async(req, res)=>{
-     
-//       const query = {_id : new ObjectId(req.query.id)}
-//       const result = await classesCollection.deleteOne(query)
-//       res.send(result);
-//     })
-
-
-//     // Update class by instractor 
-//     app.get('/updateclass', verifyInstractor, async(req, res)=>{
-//       const id = req.query.id
-//       const quary = {_id : new ObjectId(id)}
-//       const result = await classesCollection.findOne(quary)
-//       res.send(result)
-//     })
-
-
-//     // Called from instractor dashboard for myclasses data of instructor
-//     app.get('/myclasses', verifyJWT, verifyInstractor, async(req, res)=>{
-//       const email = req.query.email;
-//       const result = await classesCollection.find({email : email}).toArray()
-//       res.send(result)
-//     })
+router.get("/aclass", async(req, res)=>{
+    Course.findById(req.query.id)
+    .then(result => res.send(result))
+    .catch(error => console.log('Class find error by id', error))
+})
 
 
 
 module.exports = router
+
+// router.get("/", async(req, res)=>{
+//     res.send("ok")
+// })
